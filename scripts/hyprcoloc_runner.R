@@ -26,7 +26,10 @@ split_csv <- function(value) {
 }
 
 to_bool <- function(value) {
-  if (!value %in% c("true", "false")) {
+  # The host renders boolean false as an empty value (presence semantics:
+  # `[ -n "$VAR" ]`-style consumers see unset), so an empty string is an
+  # explicit false rather than a malformed value.
+  if (!value %in% c("true", "false", "")) {
     stop(sprintf("boolean environment value must be true or false, got `%s`", value), call. = FALSE)
   }
   identical(value, "true")
